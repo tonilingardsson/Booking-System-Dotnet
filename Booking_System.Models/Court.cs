@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace Booking_System.Models
 {
-    internal class Court
+    public class Court
     {
+        public int Id { get; set; }
+
+        [MinLength(2, ErrorMessage = "Minimum of 2 characters is required")]
+        [MaxLength(50, ErrorMessage = "Maximum of 50 characters")]
+        public string CourtName { get; set; } = string.Empty;
+
     }
 }
