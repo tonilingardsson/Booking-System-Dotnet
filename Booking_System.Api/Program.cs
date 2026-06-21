@@ -1,5 +1,7 @@
+using Booking_System.Api.Data;
+using Microsoft.EntityFrameworkCore;
 
-namespace Booking_System_Dotnet
+namespace Booking_System_.Api
 {
     public class Program
     {
@@ -14,6 +16,9 @@ namespace Booking_System_Dotnet
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            // Read connection string from configuration; register database context
+            builder.Services.AddDbContext<BookingDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
