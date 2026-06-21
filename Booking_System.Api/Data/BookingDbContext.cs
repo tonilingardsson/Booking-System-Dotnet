@@ -1,0 +1,37 @@
+using Booking_System;
+using Microsoft.EntityFrameworkCore;
+using Booking_System.Models;
+
+namespace Booking_System.Api.Data
+{
+    public class BookingDbContext : DbContext
+    {
+        public DbSet<Booking> Bookings { get; set; }
+        public DbSet<Court> Courts { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+
+        public Booking_System(DbContextOptions<Booking_System> options) : base(options)
+        { }
+
+        //        protected override void OnModelCreating(ModelBuilder modelBuilder) 
+        //        {
+        //            base.OnModelCreating(modelBuilder);
+
+        //            modelBuilder.Entity<Court>().HasData(
+        //                new Court
+        //                {
+        //                    Id = 1,
+        //                    CourtName = "Rafa Nadal"
+        //                },
+        //                {
+        //                Id = 2,
+        //                    CourtName = "Roger Federer"
+        //                },
+        //{
+        //                Id = 3,
+        //                    CourtName = "Björn Borg"
+        //                },
+        //                );
+        //        }
+    }
+}
