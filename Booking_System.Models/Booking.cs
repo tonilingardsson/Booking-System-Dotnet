@@ -18,7 +18,5 @@ namespace Booking_System.Models
         public Court Court { get; set; } = null!;
 
         public DateTime StartTime {  get; set; }
-
-        public DateTime EndTime { get; set;}
     }
 }
