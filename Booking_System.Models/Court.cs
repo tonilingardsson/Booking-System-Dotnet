@@ -1,4 +1,4 @@
-using System.ComponentModel.Dausing System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace Booking_System.Models
 {
