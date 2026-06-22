@@ -1,6 +1,6 @@
 using Booking_System.Api.Data;
 using Booking_System.Api.Dtos;
-//using Booking_System.Api.Models;
+using Booking_System.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Booking_System.Api.Services
@@ -51,11 +51,11 @@ namespace Booking_System.Api.Services
         {
             // Normalize and validate booking data before saving
             NormalizeBooking(booking);
-            await ValidateBookingAsync(booking, isUpdate : false);
+            await ValidateBookingAsync(booking, isUpdate: false);
 
             _context.Bookings.Add(booking);
             await _context.SaveChangesAsync();
-            
+
             return booking;
         }
 
@@ -86,14 +86,14 @@ namespace Booking_System.Api.Services
         {
             var existingBooking = await _context.Bookings.FindAsync(id);
 
-            if (existingBooking is null) 
-            { 
-                return false; 
+            if (existingBooking is null)
+            {
+                return false;
             }
 
-            _context.Bookings.Remove(existing);
-            await _context.SaveChangesAsync(); 
-            
+            _context.Bookings.Remove(existingBooking);
+            await _context.SaveChangesAsync();
+
             return true;
         }
 
@@ -110,8 +110,8 @@ namespace Booking_System.Api.Services
             return await _context.Bookings
                 .Include(b => b.Customer)
                 .Include(b => b.Court)
-                .Include(b => b.StartDate >= startOfDay && b.StartTime <= endOfDay)
-                .OrderBy(b => b.StartDate)
+                .Where(b => b.StartTime >= startOfDay && b.StartTime <= endOfDay)
+                .OrderBy(b => b.StartTime)
                 .ToListAsync(); // I remember that the teacher does not like when we use too much .Include()
         }
 
@@ -133,20 +133,15 @@ namespace Booking_System.Api.Services
             return slots;
         }
 
-        public async Task<IEnumerable<CourtStatistiscsDto>>GetStatisticsAsync(DateOnly startDate, DateOnly endDate)
+        public async Task<IEnumerable<CourtStatisticsDto>> GetStatisticsAsync(DateOnly startDate, DateOnly endDate)
         {
-            // This method will:
-            // 1. Load bookings between the two dates.
-            // 2. Group them by court.
-            // 3. Return booking counts per court.
-
             var start = startDate.ToDateTime(TimeOnly.MinValue);
             var end = endDate.ToDateTime(TimeOnly.MaxValue);
 
             var query = await _context.Bookings
                 .Include(b => b.Court)
                 .Where(b => b.StartTime >= start && b.StartTime <= end)
-                .GroupBy(b => new { b.CourtId, b.Court!.CourtName })
+                .GroupBy(b => new { b.CourtId, b.Court!.CourtName})
                 .Select(g => new CourtStatisticsDto
                 {
                     CourtId = g.Key.CourtId,
@@ -192,42 +187,38 @@ namespace Booking_System.Api.Services
 
             // Rule 2: Opening hours are between 7 and 22
             // With 1 hour booking, valid start hours are 7 to 21, inclusive.
-            if (hour <7 ||  hour > 21)
+            if (hour < 7 || hour > 21)
             {
                 throw new BookingValidationException("Bookings are only allowed between 7:00 and 22:00.");
             }
 
             // Rule 3: Customer and court must exist.
-            var customerExists = await _context.Customer.AnyAsync(c => c.Id == booking.CustomerId) 
-                if (!customerExists)
-                {
-                    throw new BookingValidationException("Customer does not exist.");
-                }
+            var customerExists = await _context.Customers.AnyAsync(c => c.Id == booking.CustomerId);
+            if (!customerExists)
+            {
+                throw new BookingValidationException("Customer does not exist.");
+            }
 
             var courtExists = await _context.Courts.AnyAsync(c => c.Id == booking.CourtId);
-            if (!courtExists) 
+            if (!courtExists)
             {
                 throw new BookingValidationException("Court does not exist.");
             }
 
-            // Rule 4: No double booking / overlap on the same court.
-            // Because we use 1 hour slots starting on whole hours,
-            // we can just check for an existing booking on same court & start time.
-
             var start = booking.StartTime;
 
             var overlappingQuery = _context.Bookings
-                .Where(b => b.CourtId == booking.CourtId && b.StartDate == start);
+                .Where(b => b.CourtId == booking.CourtId && b.StartTime == start);
 
-            // When udpating, ignoring the current booking's own record.
             if (isUpdate)
             {
                 overlappingQuery = overlappingQuery.Where(b => b.Id != booking.Id);
             }
 
             var overlapExists = await overlappingQuery.AnyAsync();
-            if (overlappingQuery)
+            if (overlapExists)
             {
                 throw new BookingValidationException("This court is already booked at that time.");
             }
-}
+        }
+        } }

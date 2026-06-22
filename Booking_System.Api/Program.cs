@@ -1,7 +1,8 @@
 using Booking_System.Api.Data;
+using Booking_System.Api.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace Booking_System_.Api
+namespace Booking_System.Api
 {
     public class Program
     {
@@ -9,19 +10,19 @@ namespace Booking_System_.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // Read connection string from configuration; register database context
-            builder.Services.AddDbContext<BookingDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-            
+            builder.Services.AddDbContext<BookingDbContext>(options =>
+                options.UseSqlServer(
+                    builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddScoped<IBookingService, BookingService>();
+
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -31,7 +32,6 @@ namespace Booking_System_.Api
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
