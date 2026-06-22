@@ -1,4 +1,5 @@
 using Booking_System.Models;
+using Booking_System.Api.Dtos;
 
 namespace Booking_System.Api.Services
 {
@@ -15,12 +16,12 @@ namespace Booking_System.Api.Services
         // Throws BookingValidationException if any rule is broken
         Task<Booking> CreateBookingAsync(Booking booking);
 
-        Task<Bookin?> UpdateBooknigAsync(Booking booking);
+        Task<Booking?> UpdateBookingAsync(Booking booking);
 
         Task<bool> DeleteBookingAsync(int id); // This does not sound familiar to me. We did it in a different way (more beginner friendly?)
 
         // Returns all bookings for a specific date
-        Task<IEnumerable<Booknig>> GetBookingsForDayAsync(DateOnly date);
+        Task<IEnumerable<Booking>> GetBookingsForDayAsync(DateOnly date);
 
         // Returs booking counts per court and total between two dates 
         Task<IEnumerable<CourtStatisticsDto>> GetStatisticsAsync(DateOnly startDate, DateOnly endDate);
