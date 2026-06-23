@@ -66,7 +66,7 @@ Suggested unit test coverage:
 
 ### Integration tests
 
-Postman should be used for integration testing of critical endpoint flows.[1][2]
+Postman should be used for integration testing of critical endpoint flows.
 
 Suggested Postman flows:
 
@@ -80,25 +80,3 @@ Suggested Postman flows:
 ## Error handling
 
 The current validation flow returns the first relevant error that is found. For example, if the booking time is invalid, the API can reject the request before checking whether the customer exists. This is acceptable for a beginner-friendly backend API because the validation order is consistent and easy to explain.
-
-## Running the project
-
-1. Start the API project in Visual Studio.
-2. Open Swagger in the browser.
-3. Use the available endpoints to create and retrieve bookings.
-4. Use Postman to verify selected happy-path and failing-path scenarios.
-
-Swagger is a common way to interactively test ASP.NET Core Web API endpoints from the browser.[1]
-
-## Notes for further development
-
-Possible improvements for the next version:
-
-- Return DTOs instead of full EF Core entities.
-- Add broader availability calculation for date ranges and courts.
-- Improve validation to return multiple errors at once.
-- Add more automated tests for edge cases and future business rules.
-
-## Testing project
-
-Yes, creating a separate MSTest project is the right approach for the assignment if the unit tests are not done yet. A test project can be created directly in Visual Studio as an MSTest Test Project and then connected to the API or service project.[3][5][4]
