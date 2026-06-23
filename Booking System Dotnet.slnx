@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="Booking_System.Api/Booking_System.Api.csproj" />
   <Project Path="Booking_System.Models/Booking_System.Models.csproj" />
+  <Project Path="Booking_System.Tests/Booking_System.Tests.csproj" Id="f74996d2-851b-4584-be3e-e271510fb1dd" />
 </Solution>
