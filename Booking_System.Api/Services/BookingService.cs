@@ -221,4 +221,5 @@ namespace Booking_System.Api.Services
                 throw new BookingValidationException("This court is already booked at that time.");
             }
         }
-        } }
+    } 
+}
