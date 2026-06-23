@@ -5,9 +5,6 @@ namespace Booking_System.Models
     public class Booking
     {
         public int Id { get; set; }
-
-        // Set this in Service to have greater control
-        //public DateTime CreatedAt { get; set; } = DateTime.Now;
         
         public int CustomerId { get; set; }
         
