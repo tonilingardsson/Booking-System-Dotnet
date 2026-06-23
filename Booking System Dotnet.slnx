@@ -1,4 +1,4 @@
 <Solution>
-  <Project Path="Booking System Dotnet/Booking_System.Api.csproj" />
+  <Project Path="Booking_System.Api/Booking_System.Api.csproj" />
   <Project Path="Booking_System.Models/Booking_System.Models.csproj" />
 </Solution>

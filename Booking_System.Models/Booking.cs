@@ -11,11 +11,11 @@ namespace Booking_System.Models
         
         public int CustomerId { get; set; }
         
-        public Customer Customer { get; set; } = null!;
+        public Customer? Customer { get; set; } = null!;
         
         public int CourtId { get; set; }
         
-        public Court Court { get; set; } = null!;
+        public Court? Court { get; set; } = null!;
 
         public DateTime StartTime {  get; set; }
     }

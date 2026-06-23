@@ -35,6 +35,17 @@ namespace Booking_System.Api.Data
                     CourtName = "Björn Borg"
                 }
             );
+
+            modelBuilder.Entity<Customer>().HasData(
+                new Customer
+                {
+                    Id = 1,
+                    FirstName = "Antonio",
+                    LastName = "Luna",
+                    EmailAddress = "antonio@luna.com",
+                    PhoneNumber = "0729291305"
+                }
+            );
         }
     }
 }
