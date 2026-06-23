@@ -47,5 +47,7 @@ namespace Booking_System.Api.Data
                 }
             );
         }
+
+        // Create _service = new BookinService(...)
     }
 }
