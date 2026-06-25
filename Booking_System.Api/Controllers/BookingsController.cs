@@ -61,5 +61,22 @@ namespace Booking_System.Api.Controllers
                 return BadRequest(new { message = ex.Message});
             }
         }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Booking>> Update(int id, [FromBody] Booking booking)
+        {
+            if (id != booking.Id) return BadRequest(new { message = "Id mismatch." });
+
+            try
+            {
+                var updated = await _bookingService.UpdateBookingAsync(booking);
+                if (updated == null) return NotFound();
+                return Ok(updated);
+            }
+            catch (BookingValidationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }
