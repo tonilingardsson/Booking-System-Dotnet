@@ -7,6 +7,7 @@ namespace Booking_System.Api.Controllers
     [ApiController]
     [Route("api/[controller]")]
     public class BookingsController : ControllerBase
+
     {
         private readonly IBookingService _bookingService;
 
@@ -77,6 +78,14 @@ namespace Booking_System.Api.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var deleted = await _bookingService.DeleteBookingAsync(id);
+            if (!deleted) return NotFound();
+            return NoContent();
         }
     }
 }
