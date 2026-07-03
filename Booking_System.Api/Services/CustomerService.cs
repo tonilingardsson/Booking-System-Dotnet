@@ -4,7 +4,7 @@ using Booking_System.Api.Services;
 using Booking_System.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Booking_System_Dotnet.Services
+namespace Booking_System.Api.Services
 {
     public class CustomerValidationException : Exception
     {
@@ -15,9 +15,9 @@ namespace Booking_System_Dotnet.Services
     }
     public class CustomerService : ICustomerService
     {
-        private readonly CustomerDbContext _context;
+        private readonly BookingDbContext _context;
 
-        public CustomerService(CustomerDbContext context)
+        public CustomerService(BookingDbContext context)
         {
             _context = context;
         }
@@ -25,7 +25,7 @@ namespace Booking_System_Dotnet.Services
         // -------------------------------------------------------------------
         // Basic CRUD
         // -------------------------------------------------------------------
-        public async Task<IEnumerable<Customer>> GetCustomersAsync()
+        public async Task<IEnumerable<Customer>> GetAllCustomersAsync()
         {
             return await _context.Customers
                 .ToListAsync();

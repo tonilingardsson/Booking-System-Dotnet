@@ -2,7 +2,7 @@
 using Booking_System.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Booking_System_Dotnet.Controllers
+namespace Booking_System.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
