@@ -38,5 +38,36 @@ namespace Booking_System.Api.Services
             return await _context.Customers
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
+        public async Task<Customer?> CreateCustomerAsync(Customer customer)
+        {
+            _context.Customers.Add(customer);
+            await _context.SaveChangesAsync();
+            return customer;
+        }
+        public async Task<Customer?> UpdateCustomerAsync(int id, Customer customer)
+        {
+            var existingCustomer = await _context.Customers.FindAsync(id);
+
+            if (existingCustomer is null)
+            {
+                return null;
+            }
+
+            existingCustomer.FirstName = customer.FirstName;
+            existingCustomer.LastName = customer.LastName;
+            existingCustomer.EmailAddress = customer.EmailAddress;
+            existingCustomer.PhoneNumber = customer.PhoneNumber;
+        }
+
+        public async Task<bool> DeleteCustomerAsync(int id)
+        {
+            var customer = await _context.Customers.FindAsync(id);
+
+            if (customer is null)
+            { return false; }
+            _context.Customers.Remove(customer);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }
