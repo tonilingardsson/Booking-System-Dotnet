@@ -22,6 +22,8 @@ namespace Booking_System.Api.Services
             _context = context;
         }
 
+        
+
         // -------------------------------------------------------------------
         // Basic CRUD
         // -------------------------------------------------------------------
@@ -29,6 +31,12 @@ namespace Booking_System.Api.Services
         {
             return await _context.Customers
                 .ToListAsync();
+        }
+
+        public async Task<Customer?> GetCustomerByIdAsync(int id)
+        {
+            return await _context.Customers
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
     }
 }

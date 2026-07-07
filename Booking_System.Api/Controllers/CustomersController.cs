@@ -23,5 +23,17 @@ namespace Booking_System.Api.Controllers
             return Ok(customers);
 
         }
+        // GET: api/customers
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Customer>> GetCustomerById(int id)
+        {
+            var customer = await _customerService.GetCustomerByIdAsync(id);
+
+            if (customer is null)
+            {
+                return NotFound();
+            }
+            return Ok(customer);
+        }
     }
 }

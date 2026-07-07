@@ -7,6 +7,6 @@ namespace Booking_System.Api.Services
     {
         Task<IEnumerable<Customer>> GetAllCustomersAsync();
 
-        // Task<Customer?> GetCustomerByIdAsync(int id);
+        Task<Customer?> GetCustomerByIdAsync(int id);
     }
 }
