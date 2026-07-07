@@ -11,14 +11,12 @@ namespace Booking_System.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            //builder.Services.AddControllers();
-            builder.Services.AddControllers()
-            .AddJsonOptions(options =>
-            { 
-                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-            });
-
-
+            builder.Services.AddControllers();
+            //builder.Services.AddControllers()
+            //.AddJsonOptions(options =>
+            //{ 
+            //    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+            //});
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -26,7 +24,7 @@ namespace Booking_System.Api
                 options.UseSqlServer(
                     builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            builder.Services.AddScoped<IBookingService, BookingService>();
+            builder.Services.AddScoped<ICustomerService, CustomerService>();
 
             var app = builder.Build();
 
