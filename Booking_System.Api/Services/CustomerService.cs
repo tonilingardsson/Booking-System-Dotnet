@@ -2,6 +2,7 @@
 using Booking_System.Api.Dtos;
 using Booking_System.Api.Services;
 using Booking_System.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace Booking_System.Api.Services
@@ -57,6 +58,9 @@ namespace Booking_System.Api.Services
             existingCustomer.LastName = customer.LastName;
             existingCustomer.EmailAddress = customer.EmailAddress;
             existingCustomer.PhoneNumber = customer.PhoneNumber;
+
+            await _context.SaveChangesAsync();
+            return existingCustomer;
         }
 
         public async Task<bool> DeleteCustomerAsync(int id)
