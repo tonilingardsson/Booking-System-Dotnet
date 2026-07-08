@@ -40,16 +40,27 @@ namespace Booking_System.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<Customer>> CreateCustomer(Customer customer)
         {
+            try
+            {
+
             var createdCustomer = await _customerService.CreateCustomerAsync(customer);
 
             return CreatedAtAction(
                 nameof(GetCustomerById),
-                new { id = createdCustomer.Id }, createdCustomer);
+                new { id = createdCustomer?.Id }, createdCustomer);
+            }
+            catch (CustomerValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<Customer>> UpdateCustomer(int id, Customer customer)
         {
+            try
+            {
+
             var updatedCustomer = await _customerService.UpdateCustomerAsync(id, customer);
 
             if (updatedCustomer is null)
@@ -58,6 +69,11 @@ namespace Booking_System.Api.Controllers
             }
 
             return Ok(updatedCustomer);
+            }
+            catch (CustomerValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
