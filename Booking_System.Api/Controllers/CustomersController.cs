@@ -35,5 +35,41 @@ namespace Booking_System.Api.Controllers
             }
             return Ok(customer);
         }
+
+        // Post a new customer
+        [HttpPost]
+        public async Task<ActionResult<Customer>> CreateCustomer(Customer customer)
+        {
+            var createdCustomer = await _customerService.CreateCustomerAsync(customer);
+
+            return CreatedAtAction(
+                nameof(GetCustomerById),
+                new { id = createdCustomer.Id }, createdCustomer);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Customer>> UpdateCustomer(int id, Customer customer)
+        {
+            var updatedCustomer = await _customerService.UpdateCustomerAsync(id, customer);
+
+            if (updatedCustomer is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(updatedCustomer);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCustomer(int id)
+        {
+            bool deleted = await _customerService.DeleteCustomerAsync(id);
+
+            if (!deleted)
+            { 
+                return NotFound(); 
+            }
+            return NoContent();
+        }
     }
 }
