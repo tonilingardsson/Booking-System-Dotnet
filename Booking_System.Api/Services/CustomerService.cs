@@ -41,12 +41,18 @@ namespace Booking_System.Api.Services
         }
         public async Task<Customer?> CreateCustomerAsync(Customer customer)
         {
+            //Calling validation created below while creating a customer
+            ValidateCustomer(customer);
+
             _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
             return customer;
         }
         public async Task<Customer?> UpdateCustomerAsync(int id, Customer customer)
         {
+            //Calling validation created below while updating a customer
+            ValidateCustomer(customer);
+
             var existingCustomer = await _context.Customers.FindAsync(id);
 
             if (existingCustomer is null)
