@@ -76,5 +76,34 @@ namespace Booking_System.Api.Services
             await _context.SaveChangesAsync();
             return true;
         }
+
+        // Helper method: validations
+        private void ValidateCustomer(Customer customer)
+        {
+            if (string.IsNullOrWhiteSpace(customer.FirstName))
+            {
+                throw new CustomerValidationException("First name is required!");
+            }
+            
+            if (string.IsNullOrWhiteSpace(customer.LastName))
+            {
+                throw new CustomerValidationException("Last name is required!");
+            }
+            
+            if (string.IsNullOrWhiteSpace(customer.EmailAddress))
+            {
+                throw new CustomerValidationException("Email address is required!");
+            }
+
+            if (!customer.EmailAddress.Contains("@"))
+            {
+                throw new CustomerValidationException("Email address must be valid.");
+            }
+
+            if (string.IsNullOrWhiteSpace(customer.PhoneNumber))
+            {
+                throw new CustomerValidationException("Phone number is required!");
+            }
+        }
     }
 }
