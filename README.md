@@ -80,3 +80,17 @@ Suggested Postman flows:
 ## Error handling
 
 The current validation flow returns the first relevant error that is found. For example, if the booking time is invalid, the API can reject the request before checking whether the customer exists. This is acceptable for a beginner-friendly backend API because the validation order is consistent and easy to explain.
+
+For now I have these endpoints:
+- Bookings:
+    * GetAllBookings
+    * GetBookingById
+    * CreateBooking
+    * UpdateBooking
+    * DeleteBooking
+- Customers:
+    * GetAllCustomers
+    * GetCustomerById
+    * CreateCustomer
+    * UpdateCustomer
+    * DeleteCustomer
