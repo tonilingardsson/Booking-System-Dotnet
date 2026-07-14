@@ -14,7 +14,126 @@ This project is an ASP.NET Core Web API for managing court bookings. It allows c
 - MSTest
 - Postman
 
-Swagger is used to explore and test endpoints in the browser, while Postman is used to verify critical API flows outside the Swagger UI.[1][2]
+## How to Run the Project
+
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/tonilingardsson/Booking-System-Dotnet.git](https://github.com/tonilingardsson/Booking-System-Dotnet.git)
+   ```
+2. **Navigate to the API project folder:**
+   ```bash
+   cd Booking-System-Dotnet/Booking_System.Api
+   ```
+3. Restore dependencies:
+```bash
+   dotnet restore
+   ```
+4. Apply database migrations:
+Ensure your SQL Server instance is running and your connection string in appsettings.json is correctly configured. Then, update the database:
+```bash
+   dotnet ef database update
+   ```
+5. Run the application:
+```bash
+   dotnet run
+   ```
+
+##Base URL and Swagger URL 
+Once the application is running, the API will be hosted locally.
+
+Base API URL: https://localhost:5001/api (Port may vary depending on your launchSettings.json configuration, e.g., 7001 or 7123).
+
+Swagger Documentation: https://localhost:5001/swagger
+
+Swagger can be used directly in your browser to explore the endpoints, view schemas, and execute test requests.
+
+Endpoints & JSON Examples
+Customers
+Create Customer
+POST /api/Customers
+
+Request Body:
+
+JSON
+{
+  "name": "Jane Doe",
+  "email": "jane.doe@example.com",
+  "phoneNumber": "070-1234567"
+}
+Response (201 Created):
+
+JSON
+{
+  "id": 1,
+  "name": "Jane Doe",
+  "email": "jane.doe@example.com",
+  "phoneNumber": "070-1234567"
+}
+Courts
+Create Court
+POST /api/Courts
+
+Request Body:
+
+JSON
+{
+  "name": "Center Court",
+  "surfaceType": "Hardcourt"
+}
+Response (201 Created):
+
+JSON
+{
+  "id": 1,
+  "name": "Center Court",
+  "surfaceType": "Hardcourt"
+}
+Bookings
+Create Booking
+POST /api/Bookings
+
+Note: Bookings must start on a whole hour (e.g., 14:00) and fall within the 07:00 - 21:00 operating window.
+
+Request Body:
+
+JSON
+{
+  "customerId": 1,
+  "courtId": 1,
+  "startTime": "2026-07-20T14:00:00"
+}
+Response (201 Created):
+
+JSON
+{
+  "id": 1,
+  "customerId": 1,
+  "courtId": 1,
+  "startTime": "2026-07-20T14:00:00",
+  "endTime": "2026-07-20T15:00:00"
+}
+Validation Error Response (400 Bad Request) - Example of booking at an invalid time:
+
+JSON
+{
+  "status": 400,
+  "title": "Validation Error",
+  "detail": "A booking must start on a whole hour."
+}
+Validation Rules Implemented
+The current booking validation is handled in the service layer using the ValidateBookingAsync method.
+
+Bookings must start on a whole hour (e.g., 13:00).
+
+Valid start times are between 07:00 and 21:00 (making the end time no later than 22:00).
+
+The selected customer and court must exist in the database.
+
+A court cannot be double-booked for the exact same start time.
+
+API Testing
+Unit Tests
+Validation logic in the booking service is verified using MSTest. The suite covers boundaries such as valid/invalid hours, missing entities, and double-bookings.
 
 ## Main entities
 
