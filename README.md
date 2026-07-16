@@ -6,13 +6,14 @@ This project is an ASP.NET Core Web API for managing court bookings. It allows c
 
 ## Tech stack
 
-- .NET
-- ASP.NET Core Web API
-- Entity Framework Core
-- SQL Server
-- Swagger / OpenAPI
-- MSTest
-- Postman
+* **.NET** (ASP.NET Core Web API)
+ **Entity Framework Core**
+* **SQL Server**
+* **Swagger / OpenAPI**
+* **MSTest**
+* **Postman**
+
+___
 
 ## How to Run the Project
 
@@ -38,19 +39,33 @@ Ensure your SQL Server instance is running and your connection string in appsett
    dotnet run
    ```
 
-##Base URL and Swagger URL 
+## Base URL and Swagger URL 
+
 Once the application is running, the API will be hosted locally.
 
-Base API URL: https://localhost:5001/api (Port may vary depending on your launchSettings.json configuration, e.g., 7001 or 7123).
-
-Swagger Documentation: https://localhost:5001/swagger
+* **Base API URL:** https://localhost:5001/api (Port may vary depending on your launchSettings.json configuration, e.g., 7001 or 7123).
+* **Swagger Documentation:** https://localhost:5001/swagger
 
 Swagger can be used directly in your browser to explore the endpoints, view schemas, and execute test requests.
 
-Endpoints & JSON Examples
-Customers
-Create Customer
-POST /api/Customers
+## Available endpoints:
+**Bookings:**
+    * GET GetAllBookings
+    * GET GetBookingById
+    * POST CreateBooking
+    * PUT UpdateBooking
+    * DELETE DeleteBooking
+** Customers:**
+    * GET GetAllCustomers
+    * GET GetCustomerById
+    * POST CreateCustomer
+    * PUT UpdateCustomer
+    * DELETE DeleteCustomer
+
+
+## Endpoints & JSON Examples
+### Customers
+Create Customer: POST /api/Customers
 
 Request Body:
 
@@ -60,6 +75,7 @@ JSON
   "email": "jane.doe@example.com",
   "phoneNumber": "070-1234567"
 }
+
 Response (201 Created):
 
 JSON
@@ -69,28 +85,9 @@ JSON
   "email": "jane.doe@example.com",
   "phoneNumber": "070-1234567"
 }
-Courts
-Create Court
-POST /api/Courts
 
-Request Body:
-
-JSON
-{
-  "name": "Center Court",
-  "surfaceType": "Hardcourt"
-}
-Response (201 Created):
-
-JSON
-{
-  "id": 1,
-  "name": "Center Court",
-  "surfaceType": "Hardcourt"
-}
-Bookings
-Create Booking
-POST /api/Bookings
+### Bookings
+**Create Booking:** POST /api/Bookings
 
 Note: Bookings must start on a whole hour (e.g., 14:00) and fall within the 07:00 - 21:00 operating window.
 
@@ -102,6 +99,7 @@ JSON
   "courtId": 1,
   "startTime": "2026-07-20T14:00:00"
 }
+
 Response (201 Created):
 
 JSON
@@ -112,49 +110,31 @@ JSON
   "startTime": "2026-07-20T14:00:00",
   "endTime": "2026-07-20T15:00:00"
 }
+
 Validation Error Response (400 Bad Request) - Example of booking at an invalid time:
 
 JSON
+
 {
   "status": 400,
   "title": "Validation Error",
   "detail": "A booking must start on a whole hour."
 }
-Validation Rules Implemented
+
+## Validation Rules Implemented
+
 The current booking validation is handled in the service layer using the ValidateBookingAsync method.
 
-Bookings must start on a whole hour (e.g., 13:00).
+* Bookings must start on a whole hour (e.g., 13:00).
+* Valid start times are between 07:00 and 21:00 (making the end time no later than 22:00).
+* The selected customer and court must exist in the database.
+* A court cannot be double-booked for the exact same start time.
 
-Valid start times are between 07:00 and 21:00 (making the end time no later than 22:00).
+Because EndTime is derived from StartTime + 1 hour, the system does not currently need a separate user-input validation to check whether the end time is earlies than the start time.
 
-The selected customer and court must exist in the database.
+## Error handling
 
-A court cannot be double-booked for the exact same start time.
-
-API Testing
-Unit Tests
-Validation logic in the booking service is verified using MSTest. The suite covers boundaries such as valid/invalid hours, missing entities, and double-bookings.
-
-## Main entities
-
-The API is built around three main entities:
-
-- **Booking** – stores the reservation date and time together with the selected customer and court.
-- **Customer** – stores customer information such as name, email address, and phone number.
-- **Court** – stores the court that can be booked.
-
-## Validation rules implemented
-
-The current booking validation is handled in the service layer. Based on the current `ValidateBookingAsync` method, these rules are implemented:
-
-- A booking must start on a whole hour, for example `13:00`.
-- A booking must be within opening hours.
-- Valid start times are from `07:00` to `21:00`, which makes the one-hour booking end no later than `22:00`.
-- The selected customer must exist in the database.
-- The selected court must exist in the database.
-- A court cannot be booked twice for the same start time.
-
-Because `EndTime` is derived from `StartTime + 1 hour`, the system does not currently need a separate user-input validation to check whether end time is earlier than start time.
+The current validation flow returns the first relevant error that is found. For example, if the booking time is invalid, the API can reject the request before checking whether the customer exists. This is acceptable for a beginner-friendly backend API because the validation order is consistent and easy to explain.
 
 ## Current limitations
 
@@ -163,11 +143,9 @@ The current overlap validation checks whether another booking exists on the same
 There is also a TODO left in the code for availability calculation. That feature has not yet been completed and should be documented as planned work rather than finished functionality.
 
 ## API testing
-
 The API is tested at two levels:
 
 ### Unit tests
-
 Unit tests should focus on the validation logic in the booking service. The assignment requires at least 10 unit tests, and MSTest is a suitable choice for a Visual Studio based .NET project.[3][4]
 
 Suggested unit test coverage:
@@ -183,33 +161,13 @@ Suggested unit test coverage:
 9. Booking with the same time but a different court should pass.
 10. Booking with valid customer, valid court, and valid time should pass.
 
-### Integration tests
-
+## Integration tests
 Postman should be used for integration testing of critical endpoint flows.
 
 Suggested Postman flows:
-
 - `GET /api/Bookings` returns `200 OK`.
 - `POST /api/Bookings` with valid data returns `201 Created`.
 - `POST /api/Bookings` with a non-existing customer returns a validation error.
 - `POST /api/Bookings` with a non-existing court returns a validation error.
 - `POST /api/Bookings` with a non-whole-hour time returns a validation error.
 - `POST /api/Bookings` with an already booked court and time returns a validation error.
-
-## Error handling
-
-The current validation flow returns the first relevant error that is found. For example, if the booking time is invalid, the API can reject the request before checking whether the customer exists. This is acceptable for a beginner-friendly backend API because the validation order is consistent and easy to explain.
-
-For now I have these endpoints:
-- Bookings:
-    * GetAllBookings
-    * GetBookingById
-    * CreateBooking
-    * UpdateBooking
-    * DeleteBooking
-- Customers:
-    * GetAllCustomers
-    * GetCustomerById
-    * CreateCustomer
-    * UpdateCustomer
-    * DeleteCustomer
