@@ -7,11 +7,27 @@ This project is an ASP.NET Core Web API for managing court bookings. It allows c
 ## Tech stack
 
 * **.NET** (ASP.NET Core Web API)
- **Entity Framework Core**
+* **Entity Framework Core**
 * **SQL Server**
 * **Swagger / OpenAPI**
 * **MSTest**
 * **Postman**
+
+## Prerequisites
+
+Before running the project, make sure the following are installed:
+
+- .NET SDK
+- SQL Server
+- Entity Framework Core tools (optional, for running migrations)
+
+## POST responses
+
+When a resource is successfully created, the API returns `201 Created`. In ASP.NET Core, this can be implemented with `CreatedAtAction(...)` so the response includes both the created object and a reference to where it can be retrieved.
+
+## Court data
+
+The project includes a `Court` entity. At the moment, courts are stored as seed data and used when creating bookings.
 
 ___
 
@@ -50,17 +66,20 @@ Swagger can be used directly in your browser to explore the endpoints, view sche
 
 ## Available endpoints:
 **Bookings:**
-    * GET GetAllBookings
-    * GET GetBookingById
-    * POST CreateBooking
-    * PUT UpdateBooking
-    * DELETE DeleteBooking
-** Customers:**
-    * GET GetAllCustomers
-    * GET GetCustomerById
-    * POST CreateCustomer
-    * PUT UpdateCustomer
-    * DELETE DeleteCustomer
+    * GET /api/Bookings
+    * GET /api/Bookings/{id}
+    * POST /api/Bookings
+    * PUT /api/Bookings/{id}
+    * DELETE /api/Bookings/{id}
+
+***Note:startTime should be sent in ISO 8601 format, for example "2026-07-20T14:00:00".
+
+**Customers:**
+    * GET /api/Customers
+    * GET /api/Customers/{id}
+    * POST /api/Customers
+    * PUT /api/Customers/{id}
+    * DELETE /api/Customers/{id}
 
 
 ## Endpoints & JSON Examples
@@ -70,21 +89,25 @@ Create Customer: POST /api/Customers
 Request Body:
 
 JSON
+```json
 {
   "name": "Jane Doe",
   "email": "jane.doe@example.com",
   "phoneNumber": "070-1234567"
 }
+```
 
 Response (201 Created):
 
 JSON
+```json
 {
   "id": 1,
   "name": "Jane Doe",
   "email": "jane.doe@example.com",
   "phoneNumber": "070-1234567"
 }
+```
 
 ### Bookings
 **Create Booking:** POST /api/Bookings
@@ -94,15 +117,18 @@ Note: Bookings must start on a whole hour (e.g., 14:00) and fall within the 07:0
 Request Body:
 
 JSON
+```json
 {
   "customerId": 1,
   "courtId": 1,
   "startTime": "2026-07-20T14:00:00"
 }
+```
 
 Response (201 Created):
 
 JSON
+```json
 {
   "id": 1,
   "customerId": 1,
@@ -110,17 +136,17 @@ JSON
   "startTime": "2026-07-20T14:00:00",
   "endTime": "2026-07-20T15:00:00"
 }
-
+```
 Validation Error Response (400 Bad Request) - Example of booking at an invalid time:
 
 JSON
-
+```json
 {
   "status": 400,
   "title": "Validation Error",
   "detail": "A booking must start on a whole hour."
 }
-
+```
 ## Validation Rules Implemented
 
 The current booking validation is handled in the service layer using the ValidateBookingAsync method.
@@ -130,7 +156,7 @@ The current booking validation is handled in the service layer using the Validat
 * The selected customer and court must exist in the database.
 * A court cannot be double-booked for the exact same start time.
 
-Because EndTime is derived from StartTime + 1 hour, the system does not currently need a separate user-input validation to check whether the end time is earlies than the start time.
+Because EndTime is derived from StartTime + 1 hour, the system does not currently need a separate user-input validation to check whether the end time is earlier than the start time.
 
 ## Error handling
 
