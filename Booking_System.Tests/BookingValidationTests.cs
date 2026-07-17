@@ -86,6 +86,7 @@ namespace Booking_System.Tests
         [TestMethod]
         public async Task CreateBooking_BeforeOpeningHours_ThrowsException()
         {
+            // Arrange
             var booking = new Booking
             {
                 CustomerId = 1,
@@ -93,15 +94,11 @@ namespace Booking_System.Tests
                 StartTime = new DateTime(2026, 6, 23, 6, 0, 0)
             };
 
-            try
-            {
-                await _service.CreateBookingAsync(booking);
-                Assert.Fail("Expected BookingValidationException was not thrown.");
-            }
-            catch (BookingValidationException ex)
-            {
-                Assert.AreEqual("Bookings are only allowed between 7:00 and 22:00.", ex.Message);
-            }
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<BookingValidationException>(() => _service.CreateBookingAsync(booking));
+                
+            Assert.AreEqual("Bookings are only allowed between 7:00 and 22:00.", exception.Message);
+
         }
 
         [TestMethod]
@@ -114,15 +111,12 @@ namespace Booking_System.Tests
                 StartTime = new DateTime(2026, 6, 23, 22, 0, 0)
             };
 
-            try
-            {
-                await _service.CreateBookingAsync(booking);
+    
+                var exception = await Assert.ThrowsAsync<BookingValidationException>(()=> _service.CreateBookingAsync(booking));
                 Assert.Fail("Expected BookingValidationException was not thrown.");
-            }
-            catch (BookingValidationException ex)
-            {
-                Assert.AreEqual("Bookings are only allowed between 7:00 and 22:00.", ex.Message);
-            }
+            
+                Assert.AreEqual("Bookings are only allowed between 7:00 and 22:00.", exception.Message);
+            
         }
 
         [TestMethod]
