@@ -201,7 +201,8 @@ namespace Booking_System.Tests
             {
                 CustomerId = 1,
                 CourtId = 1,
-                StartTime = new DateTime(2026, 7, 23, 10, 0, 0)
+                StartTime = new DateTime(2026, 7, 23, 10, 0, 0),
+                EndTime = new DateTime(2026, 7, 23, 11, 0, 0)
             });
             _context.SaveChanges();
 
@@ -209,7 +210,8 @@ namespace Booking_System.Tests
             {
                 CustomerId = 1,
                 CourtId = 2,
-                StartTime = new DateTime(2026, 7, 23, 10, 0, 0)
+                StartTime = new DateTime(2026, 7, 23, 10, 0, 0),
+                EndTime = new DateTime(2026, 7, 23, 11, 0, 0)
             };
 
             var result = await _service.CreateBookingAsync(booking);
@@ -218,6 +220,7 @@ namespace Booking_System.Tests
             Assert.AreEqual(1, result.CustomerId);
             Assert.AreEqual(2, result.CourtId);
             Assert.AreEqual(new DateTime(2026, 7, 23, 10, 0, 0), result.StartTime);
+            Assert.AreEqual(new DateTime(2026, 7, 23, 11, 0, 0), result.EndTime);
         }
 
         [TestMethod]
