@@ -56,7 +56,7 @@ namespace Booking_System.Tests
             {
                 CustomerId = 1,
                 CourtId = 1,
-                StartTime = new DateTime(2026, 6, 23, 7, 0, 0)
+                StartTime = new DateTime(2026, 7, 23, 7, 0, 0)
             };
 
             var result = await _service.CreateBookingAsync(booking);
@@ -74,7 +74,7 @@ namespace Booking_System.Tests
             {
                 CustomerId = 1,
                 CourtId = 1,
-                StartTime = new DateTime(2026, 6, 23, 21, 0, 0)
+                StartTime = new DateTime(2026, 7, 23, 21, 0, 0)
             };
 
             var result = await _service.CreateBookingAsync(booking);
@@ -91,7 +91,7 @@ namespace Booking_System.Tests
             {
                 CustomerId = 1,
                 CourtId = 1,
-                StartTime = new DateTime(2026, 6, 23, 6, 0, 0)
+                StartTime = new DateTime(2026, 7, 23, 6, 0, 0)
             };
 
             // Act & Assert
@@ -108,7 +108,7 @@ namespace Booking_System.Tests
             {
                 CustomerId = 1,
                 CourtId = 1,
-                StartTime = new DateTime(2026, 6, 23, 22, 0, 0)
+                StartTime = new DateTime(2026, 7, 23, 22, 0, 0)
             };
 
     
@@ -126,7 +126,7 @@ namespace Booking_System.Tests
             {
                 CustomerId = 1,
                 CourtId = 1,
-                StartTime = new DateTime(2026, 6, 23, 13, 30, 0)
+                StartTime = new DateTime(2026, 7, 23, 13, 30, 0)
             };
 
             var exception = await Assert.ThrowsAsync<BookingValidationException>(()=>_service.CreateBookingAsync(booking));
@@ -143,7 +143,7 @@ namespace Booking_System.Tests
             {
                 CustomerId = 999,
                 CourtId = 1,
-                StartTime = new DateTime(2026, 6, 23, 10, 0, 0)
+                StartTime = new DateTime(2026, 7, 23, 10, 0, 0)
             };
 
             var exception = await Assert.ThrowsAsync<BookingValidationException>(()=>_service.CreateBookingAsync(booking));
@@ -160,7 +160,7 @@ namespace Booking_System.Tests
             {
                 CustomerId = 1,
                 CourtId = 999,
-                StartTime = new DateTime(2026, 6, 23, 10, 0, 0)
+                StartTime = new DateTime(2026, 7, 23, 10, 0, 0)
             };
 
             var exception = await Assert.ThrowsAsync<BookingValidationException>(()=>_service.CreateBookingAsync(booking));
@@ -177,7 +177,7 @@ namespace Booking_System.Tests
             {
                 CustomerId = 1,
                 CourtId = 1,
-                StartTime = new DateTime(2026, 6, 23, 10, 0, 0)
+                StartTime = new DateTime(2026, 7, 23, 10, 0, 0)
             });
             _context.SaveChanges();
 
@@ -185,7 +185,7 @@ namespace Booking_System.Tests
             {
                 CustomerId = 1,
                 CourtId = 1,
-                StartTime = new DateTime(2026, 6, 23, 10, 0, 0)
+                StartTime = new DateTime(2026, 7, 23, 10, 0, 0)
             };
 
             var exception = await Assert.ThrowsAsync<BookingValidationException>(()=>_service.CreateBookingAsync(booking));
@@ -201,7 +201,7 @@ namespace Booking_System.Tests
             {
                 CustomerId = 1,
                 CourtId = 1,
-                StartTime = new DateTime(2026, 6, 23, 10, 0, 0)
+                StartTime = new DateTime(2026, 7, 23, 10, 0, 0)
             });
             _context.SaveChanges();
 
@@ -209,13 +209,15 @@ namespace Booking_System.Tests
             {
                 CustomerId = 1,
                 CourtId = 2,
-                StartTime = new DateTime(2026, 6, 23, 10, 0, 0)
+                StartTime = new DateTime(2026, 7, 23, 10, 0, 0)
             };
 
             var result = await _service.CreateBookingAsync(booking);
 
             Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.CustomerId);
             Assert.AreEqual(2, result.CourtId);
+            Assert.AreEqual(new DateTime(2026, 7, 23, 10, 0, 0), result.StartTime);
         }
 
         [TestMethod]
