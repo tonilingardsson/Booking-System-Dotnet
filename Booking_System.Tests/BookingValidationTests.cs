@@ -224,14 +224,15 @@ namespace Booking_System.Tests
         }
 
         [TestMethod]
-        public async Task UpdateBooking_SameBooking_IgnoresOwnId_Succeeds()
+        public async Task UpdateBooking_SameCourtAndTimeForSameId_Succeeds()
         {
             var existingBooking = new Booking
             {
                 Id = 1,
                 CustomerId = 1,
                 CourtId = 1,
-                StartTime = new DateTime(2026, 6, 23, 10, 0, 0)
+                StartTime = new DateTime(2026, 7, 23, 10, 0, 0),
+                EndTime = new DateTime(2026, 7, 23, 11, 0, 0)
             };
 
             _context.Bookings.Add(existingBooking);
@@ -242,13 +243,18 @@ namespace Booking_System.Tests
                 Id = 1,
                 CustomerId = 1,
                 CourtId = 1,
-                StartTime = new DateTime(2026, 6, 23, 10, 0, 0)
+                StartTime = new DateTime(2026, 7, 23, 10, 0, 0),
+                EndTime = new DateTime(2026, 7, 23, 11, 0, 0)
             };
 
             var result = await _service.UpdateBookingAsync(bookingToUpdate);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Id);
+            Assert.AreEqual(1, result.CustomerId);
+            Assert.AreEqual(1, result.CourtId);
+            Assert.AreEqual(new DateTime(2026, 7, 23, 10, 0, 0), result.StartTime);
+            Assert.AreEqual(new DateTime(2026, 7, 23, 11, 0, 0), result.EndTime);
         }
     }
 }
