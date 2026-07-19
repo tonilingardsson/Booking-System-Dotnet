@@ -129,15 +129,11 @@ namespace Booking_System.Tests
                 StartTime = new DateTime(2026, 6, 23, 13, 30, 0)
             };
 
-            try
-            {
-                await _service.CreateBookingAsync(booking);
+            var exception = await Assert.ThrowsAsync<BookingValidationException>(()=>_service.CreateBookingAsync(booking));
                 Assert.Fail("Expected BookingValidationException was not thrown.");
-            }
-            catch (BookingValidationException ex)
-            {
-                Assert.AreEqual("Bookings must start on whole hours (e.g. 13:00).", ex.Message);
-            }
+            
+                Assert.AreEqual("Bookings must start on whole hours (e.g. 13:00).", exception.Message);
+            
         }
 
         [TestMethod]
