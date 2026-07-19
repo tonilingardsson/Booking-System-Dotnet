@@ -163,15 +163,11 @@ namespace Booking_System.Tests
                 StartTime = new DateTime(2026, 6, 23, 10, 0, 0)
             };
 
-            try
-            {
-                await _service.CreateBookingAsync(booking);
+            var exception = await Assert.ThrowsAsync<BookingValidationException>(()=>_service.CreateBookingAsync(booking));
                 Assert.Fail("Expected BookingValidationException was not thrown.");
-            }
-            catch (BookingValidationException ex)
-            {
-                Assert.AreEqual("Court does not exist.", ex.Message);
-            }
+            
+                Assert.AreEqual("Court does not exist.", exception.Message);
+            
         }
 
         [TestMethod]
