@@ -116,5 +116,34 @@ namespace Booking_System.Tests
             Assert.AreEqual(customer.EmailAddress, result.EmailAddress);
             Assert.AreEqual(customer.PhoneNumber, result.PhoneNumber);
         }
+
+        [TestMethod]
+        public async Task UpdateCustomerAsync_ExistingId_UpdatesCustomer()
+        {
+            // Arrange
+            var customer = new Customer
+            {
+                Id = 1,
+                FirstName = "Antonio",
+                LastName = "Luna",
+                EmailAddress = "antonio@luna.com",
+                PhoneNumber = "0729291305"
+            };
+
+            // Act
+            customer.FirstName = "UpdatedFirstName";
+            customer.LastName = "UpdatedLastName";
+            customer.EmailAddress = "toni@luna.com";
+            customer.PhoneNumber = "0701234567";
+
+            var result = await _service.UpdateCustomerAsync(customer);
+            
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(customer.FirstName, result.FirstName);
+            Assert.AreEqual(customer.LastName, result.LastName);
+            Assert.AreEqual(customer.EmailAddress, result.EmailAddress);
+            Assert.AreEqual(customer.PhoneNumber, result.PhoneNumber);
+        }
     }
 }
