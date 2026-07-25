@@ -80,5 +80,18 @@ namespace Booking_System.Tests
             Assert.AreEqual(customer.PhoneNumber, result.PhoneNumber);
         }
 
+        [TestMethod]
+        public async Task GetCustomerByIdAsync_NonExistingId_ReturnsNull()
+        {
+            // Arrange
+            int nonExistingId = 999;
+            // Act
+            var result = await _service.GetCustomerByIdAsync(nonExistingId);
+
+            // Assert
+            Assert.IsNull(result);
+        }
+
+       
     }
 }
