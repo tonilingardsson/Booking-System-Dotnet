@@ -92,6 +92,29 @@ namespace Booking_System.Tests
             Assert.IsNull(result);
         }
 
-       
+        [TestMethod]
+        public async Task CreateCustomerAsync_ValidCustomer_CreatesCustomer()
+        {
+            // Arrange
+            var customer = new Customer
+            {
+                Id = 2,
+                FirstName = "Toni",
+                LastName = "Luna",
+                EmailAddress = "toni@luna.com",
+                PhoneNumber = "0701234567"
+            };
+
+            // Act
+            var result = await _service.CreateCustomerAsync(customer);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(customer.Id, result.Id);
+            Assert.AreEqual(customer.FirstName, result.FirstName);
+            Assert.AreEqual(customer.LastName, result.LastName);
+            Assert.AreEqual(customer.EmailAddress, result.EmailAddress);
+            Assert.AreEqual(customer.PhoneNumber, result.PhoneNumber);
+        }
     }
 }
