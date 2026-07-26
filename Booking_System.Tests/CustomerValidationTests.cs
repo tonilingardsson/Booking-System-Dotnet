@@ -165,5 +165,27 @@ namespace Booking_System.Tests
             // Assert
             Assert.IsNull(result);
         }
+
+        [TestMethod]
+        public async Task DeleteCustomerAsync_ExistingId_DeletesCustomer()
+        {
+            // Arrange
+            var customer = new Customer
+            {
+                Id = 1,
+                FirstName = "Antonio",
+                LastName = "Luna",
+                EmailAddress = "antonio@luna.com",
+                PhoneNumber = "0729291305"
+            };
+
+            // Act
+            await _service.DeleteCustomerAsync(customer.Id);
+
+            // Assert
+            var result = await _service.GetCustomerByIdAsync(customer.Id);
+            Assert.IsNull(result);
+        }
+
     }
 }
