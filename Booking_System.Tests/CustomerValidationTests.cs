@@ -187,5 +187,18 @@ namespace Booking_System.Tests
             Assert.IsNull(result);
         }
 
+        [TestMethod]
+        public async Task DeleteCustomerAsync_NonExistingId_ReturnsNull()
+        {
+            // Arrange
+            int nonExistingId = 999;
+
+            // Act
+            await _service.DeleteCustomerAsync(nonExistingId);
+
+            // Assert
+            var result = await _service.GetCustomerByIdAsync(nonExistingId);
+            Assert.IsNull(result);
+        }
     }
 }
