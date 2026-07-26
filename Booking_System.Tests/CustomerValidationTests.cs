@@ -137,13 +137,33 @@ namespace Booking_System.Tests
             customer.PhoneNumber = "0701234567";
 
             var result = await _service.UpdateCustomerAsync(customer);
-            
+
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(customer.FirstName, result.FirstName);
             Assert.AreEqual(customer.LastName, result.LastName);
             Assert.AreEqual(customer.EmailAddress, result.EmailAddress);
             Assert.AreEqual(customer.PhoneNumber, result.PhoneNumber);
+        }
+
+        [TestMethod]
+        public async Task UpdateCustomerAsync_NonExistingId_ReturnsNull()
+        {
+            // Arrange
+            var customer = new Customer
+            {
+                Id = 999,
+                FirstName = "NonExisting",
+                LastName = "Customer",
+                EmailAddress = "antonio@luna.com",
+                PhoneNumber = "0729291305"
+            };
+
+            // Act
+            var result = await _service.UpdateCustomerAsync(customer);
+
+            // Assert
+            Assert.IsNull(result);
         }
     }
 }
