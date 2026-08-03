@@ -63,7 +63,7 @@ namespace Booking_System.Tests
 
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.CustomerId);
-            Assert.AreEqual(1, result.CourtId);
+            Assert.AreEqual(1, result.CourtId);l
             Assert.AreEqual(7, result.StartTime.Hour);
         }
 

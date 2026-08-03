@@ -200,5 +200,17 @@ namespace Booking_System.Tests
             var result = await _service.GetCustomerByIdAsync(nonExistingId);
             Assert.IsNull(result);
         }
+
+        private void ValidateCustomer(Customer customer)
+        {
+            if (string.IsNullOrWhiteSpace(customer.FirstName))
+                throw new CustomerValidationException("First name is required.");
+
+            if (string.IsNullOrWhiteSpace(customer.LastName))
+                throw new CustomerValidationException("Last name is required.");
+
+            if (string.IsNullOrWhiteSpace(customer.EmailAddress))
+                throw new CustomerValidationException("Email address is required.");
+        }
     }
 }
