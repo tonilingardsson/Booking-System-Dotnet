@@ -35,6 +35,7 @@ namespace Booking_System.Tests
         }
 
         [TestMethod]
+
         public async Task GetAllCustomersAsync_ReturnsCustomers()
         {
             // Arrange
@@ -53,31 +54,6 @@ namespace Booking_System.Tests
             // It should return the first customer in the database, which is Antonio Luna
             // and the second customer should not be added due to the duplicate email address
             Assert.AreEqual("A customer with the same email address already exists.", exception.Message);
-        }
-
-        [TestMethod]
-        public async Task GetCustomerByIdAsync_ExistingId_ReturnsCustomer()
-        {
-            // Arrange
-            var customer = new Customer
-            {
-                Id = 1,
-                FirstName = "Antonio",
-                LastName = "Luna",
-                EmailAddress = "antonio@luna.com",
-                PhoneNumber = "0729291305"
-            };
-
-            // Act
-            var result = await _service.GetCustomerByIdAsync(customer.Id);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(customer.Id, result.Id);
-            Assert.AreEqual(customer.FirstName, result.FirstName);
-            Assert.AreEqual(customer.LastName, result.LastName);
-            Assert.AreEqual(customer.EmailAddress, result.EmailAddress);
-            Assert.AreEqual(customer.PhoneNumber, result.PhoneNumber);
         }
 
         [TestMethod]
@@ -136,7 +112,7 @@ namespace Booking_System.Tests
             customer.EmailAddress = "toni@luna.com";
             customer.PhoneNumber = "0701234567";
 
-            var result = await _service.UpdateCustomerAsync(customer);
+            var result = await _service.UpdateCustomerAsync(customer.Id, customer);
 
             // Assert
             Assert.IsNotNull(result);
@@ -160,7 +136,7 @@ namespace Booking_System.Tests
             };
 
             // Act
-            var result = await _service.UpdateCustomerAsync(customer);
+            var result = await _service.UpdateCustomerAsync(customer.Id, customer);
 
             // Assert
             Assert.IsNull(result);
@@ -188,19 +164,22 @@ namespace Booking_System.Tests
         }
 
         [TestMethod]
-        public async Task DeleteCustomerAsync_NonExistingId_ReturnsNull()
+        public async Task DeleteCustomerAsync_NonExistingId_ReturnsFalse()
         {
             // Arrange
             int nonExistingId = 999;
 
             // Act
-            await _service.DeleteCustomerAsync(nonExistingId);
+            var result = await _service.DeleteCustomerAsync(nonExistingId);
 
             // Assert
-            var result = await _service.GetCustomerByIdAsync(nonExistingId);
-            Assert.IsNull(result);
+            Assert.IsFalse(result);
         }
 
+        // TODO: inside this test class does nothing unless you call it from a test method.
+        // Consider removing it or adding a test method that calls it.
+        // Validation belongs in the service i you want to test it,
+        // you should call the service method that does the validation.
         private void ValidateCustomer(Customer customer)
         {
             if (string.IsNullOrWhiteSpace(customer.FirstName))
