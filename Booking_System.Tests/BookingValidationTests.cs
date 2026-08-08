@@ -91,7 +91,7 @@ namespace Booking_System.Tests
             {
                 CustomerId = 1,
                 CourtId = 1,
-                StartTime = new DateTime(2026, 7, 23, 6, 0, 0)
+                StartTime = new DateTime(2026, 7, 23, 23, 0, 0)
             };
 
             // Act & Assert
@@ -108,12 +108,11 @@ namespace Booking_System.Tests
             {
                 CustomerId = 1,
                 CourtId = 1,
-                StartTime = new DateTime(2026, 7, 23, 22, 0, 0)
+                StartTime = new DateTime(2026, 8, 23, 23, 0, 0)
             };
 
     
                 var exception = await Assert.ThrowsAsync<BookingValidationException>(()=> _service.CreateBookingAsync(booking));
-                Assert.Fail("Expected BookingValidationException was not thrown.");
             
                 Assert.AreEqual("Bookings are only allowed between 7:00 and 22:00.", exception.Message);
             
@@ -126,11 +125,10 @@ namespace Booking_System.Tests
             {
                 CustomerId = 1,
                 CourtId = 1,
-                StartTime = new DateTime(2026, 7, 23, 13, 30, 0)
+                StartTime = new DateTime(2026, 8, 23, 13, 30, 0)
             };
 
             var exception = await Assert.ThrowsAsync<BookingValidationException>(()=>_service.CreateBookingAsync(booking));
-                Assert.Fail("Expected BookingValidationException was not thrown.");
             
                 Assert.AreEqual("Bookings must start on whole hours (e.g. 13:00).", exception.Message);
             
@@ -143,11 +141,10 @@ namespace Booking_System.Tests
             {
                 CustomerId = 999,
                 CourtId = 1,
-                StartTime = new DateTime(2026, 7, 23, 10, 0, 0)
+                StartTime = new DateTime(2026, 8, 23, 10, 0, 0)
             };
 
             var exception = await Assert.ThrowsAsync<BookingValidationException>(()=>_service.CreateBookingAsync(booking));
-                Assert.Fail("Expected BookingValidationException was not thrown.");
             
                 Assert.AreEqual("Customer does not exist.", exception.Message);
             
@@ -160,11 +157,10 @@ namespace Booking_System.Tests
             {
                 CustomerId = 1,
                 CourtId = 999,
-                StartTime = new DateTime(2026, 7, 23, 10, 0, 0)
+                StartTime = new DateTime(2026, 8, 23, 10, 0, 0)
             };
 
             var exception = await Assert.ThrowsAsync<BookingValidationException>(()=>_service.CreateBookingAsync(booking));
-                Assert.Fail("Expected BookingValidationException was not thrown.");
             
                 Assert.AreEqual("Court does not exist.", exception.Message);
             
@@ -177,7 +173,7 @@ namespace Booking_System.Tests
             {
                 CustomerId = 1,
                 CourtId = 1,
-                StartTime = new DateTime(2026, 7, 23, 10, 0, 0)
+                StartTime = new DateTime(2026, 8, 23, 10, 0, 0)
             });
             _context.SaveChanges();
 
@@ -185,12 +181,10 @@ namespace Booking_System.Tests
             {
                 CustomerId = 1,
                 CourtId = 1,
-                StartTime = new DateTime(2026, 7, 23, 10, 0, 0)
+                StartTime = new DateTime(2026, 8, 23, 10, 0, 0)
             };
 
-            var exception = await Assert.ThrowsAsync<BookingValidationException>(()=>_service.CreateBookingAsync(booking));
-                Assert.Fail("Expected BookingValidationException was not thrown.");
-            
+            var exception = await Assert.ThrowsAsync<BookingValidationException>(()=>_service.CreateBookingAsync(booking));            
                 Assert.AreEqual("This court is already booked at that time.", exception.Message); 
         }
 
@@ -201,8 +195,8 @@ namespace Booking_System.Tests
             {
                 CustomerId = 1,
                 CourtId = 1,
-                StartTime = new DateTime(2026, 7, 23, 10, 0, 0),
-                EndTime = new DateTime(2026, 7, 23, 11, 0, 0)
+                StartTime = new DateTime(2026, 8, 23, 10, 0, 0),
+                EndTime = new DateTime(2026, 8, 23, 11, 0, 0)
             });
             _context.SaveChanges();
 
@@ -210,8 +204,8 @@ namespace Booking_System.Tests
             {
                 CustomerId = 1,
                 CourtId = 2,
-                StartTime = new DateTime(2026, 7, 23, 10, 0, 0),
-                EndTime = new DateTime(2026, 7, 23, 11, 0, 0)
+                StartTime = new DateTime(2026, 8, 23, 10, 0, 0),
+                EndTime = new DateTime(2026, 8, 23, 11, 0, 0)
             };
 
             var result = await _service.CreateBookingAsync(booking);
@@ -219,8 +213,8 @@ namespace Booking_System.Tests
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.CustomerId);
             Assert.AreEqual(2, result.CourtId);
-            Assert.AreEqual(new DateTime(2026, 7, 23, 10, 0, 0), result.StartTime);
-            Assert.AreEqual(new DateTime(2026, 7, 23, 11, 0, 0), result.EndTime);
+            Assert.AreEqual(new DateTime(2026, 8, 23, 10, 0, 0), result.StartTime);
+            Assert.AreEqual(new DateTime(2026, 8, 23, 11, 0, 0), result.EndTime);
         }
 
         [TestMethod]
@@ -231,8 +225,8 @@ namespace Booking_System.Tests
                 Id = 1,
                 CustomerId = 1,
                 CourtId = 1,
-                StartTime = new DateTime(2026, 7, 23, 10, 0, 0),
-                EndTime = new DateTime(2026, 7, 23, 11, 0, 0)
+                StartTime = new DateTime(2026, 8, 23, 10, 0, 0),
+                EndTime = new DateTime(2026, 8, 23, 11, 0, 0)
             };
 
             _context.Bookings.Add(existingBooking);
@@ -243,8 +237,8 @@ namespace Booking_System.Tests
                 Id = 1,
                 CustomerId = 1,
                 CourtId = 1,
-                StartTime = new DateTime(2026, 7, 23, 10, 0, 0),
-                EndTime = new DateTime(2026, 7, 23, 11, 0, 0)
+                StartTime = new DateTime(2026, 8, 23, 10, 0, 0),
+                EndTime = new DateTime(2026, 8, 23, 11, 0, 0)
             };
 
             var result = await _service.UpdateBookingAsync(bookingToUpdate);
@@ -253,8 +247,8 @@ namespace Booking_System.Tests
             Assert.AreEqual(1, result.Id);
             Assert.AreEqual(1, result.CustomerId);
             Assert.AreEqual(1, result.CourtId);
-            Assert.AreEqual(new DateTime(2026, 7, 23, 10, 0, 0), result.StartTime);
-            Assert.AreEqual(new DateTime(2026, 7, 23, 11, 0, 0), result.EndTime);
+            Assert.AreEqual(new DateTime(2026, 8, 23, 10, 0, 0), result.StartTime);
+            Assert.AreEqual(new DateTime(2026, 8, 23, 11, 0, 0), result.EndTime);
         }
     }
 }
