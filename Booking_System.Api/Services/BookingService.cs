@@ -1,6 +1,7 @@
 using Booking_System.Api.Data;
 using Booking_System.Api.Dtos;
 using Booking_System.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace Booking_System.Api.Services
@@ -122,7 +123,44 @@ namespace Booking_System.Api.Services
             // 2. Load all bookings that fall in that range.
             // 3. Filter out the slots that are already booked.
 
-            var slots = new List<AvailableSlotDto>();
+            var availableSlots = new List<AvailableSlotDto>();
+
+            var courts = await _context.Courts.ToListAsync();
+
+            var rangeStart = startDate.ToDateTime(TimeOnly.MinValue);
+            var rangeEnd = endDate.ToDateTime(TimeOnly.MaxValue);
+
+            var existingBookings = await _context.Bookings.Where(b => b.StartTime >= rangeStart && b.StartTime <= rangeEnd)
+                .ToListAsync();
+
+            // Create the slots for each court for each day in the range
+            for (var date = startDate; date <= endDate; date = date.AddDays(1))
+            {
+                // For each court, 
+                foreach (var court in courts)
+                {
+                    // create slots from 7:00 to 21:00
+                    for (int hour = 7; hour <= 21; hour++)
+                    {
+                        // Create a DateTime for the start of the slot and the end of the slot (start + 1 hour)
+                        var slotStart = date.ToDateTime(new TimeOnly(hour, 0));
+                        var slotEnd = slotStart.AddHours(1);
+                        // Check if this slot is already booked
+                        bool isBooked = existingBookings.Any(b => b.CourtId == court.Id && b.StartTime == slotStart);
+                        // If not booked, add to available slots
+                        if (!isBooked)
+                        {
+                            availableSlots.Add(new AvailableSlotDto
+                            {
+                                CourtId = court.Id,
+                                CourName = court.CourtName,
+                                StartTime = slotStart,
+                                EndTime = slotEnd
+                            });
+                        }
+                    }
+                }
+            }
 
             // TODO: Implement availability calculation
             // Hint: 
@@ -130,7 +168,7 @@ namespace Booking_System.Api.Services
             // - for each date, for each court, loop hours 7 to 21 and 
             //   create candidate slots; exclude hours with existing bookings.
 
-            return slots;
+            return availableSlots;
         }
 
         public async Task<IEnumerable<CourtStatisticsDto>> GetStatisticsAsync(DateOnly startDate, DateOnly endDate)
