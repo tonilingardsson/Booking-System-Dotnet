@@ -43,21 +43,9 @@ namespace Booking_System.Api.Services
         // For example, you can check if the email address is valid or if the phone number is in the correct format.
         public async Task<Customer?> CreateCustomerAsync(Customer customer)
         {
-            // Add validation logic here if needed
-            if (await _context.Customers.AnyAsync(c => c.EmailAddress == customer.EmailAddress))
-            {
-                throw new CustomerValidationException("A customer with the same email address already exists.");
-            }
-            // You can add more validation logic here, such as checking if the phone number is in the correct format, etc.
-            if (string.IsNullOrWhiteSpace(customer.FirstName) || string.IsNullOrWhiteSpace(customer.LastName))
-            {
-                throw new CustomerValidationException("First name and last name cannot be empty.");
-            }
-            // You can also add more complex validation logic, such as checking if the email address is in a valid format, etc.
-            if (!IsValidEmail(customer.EmailAddress))
-            {
-                throw new CustomerValidationException("Invalid email address format.");
-            }
+            //Calling validation created below while creating a customer
+            ValidateCustomer(customer);
+
             _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
             return customer;
@@ -76,6 +64,9 @@ namespace Booking_System.Api.Services
         // so you can add validation logic here if needed.
         public async Task<Customer?> UpdateCustomerAsync(int id, Customer customer)
         {
+            //Calling validation created below while updating a customer
+            ValidateCustomer(customer);
+
             var existingCustomer = await _context.Customers.FindAsync(id);
 
             if (existingCustomer is null)
@@ -104,6 +95,35 @@ namespace Booking_System.Api.Services
             _context.Customers.Remove(customer);
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        // Helper method: validations
+        private void ValidateCustomer(Customer customer)
+        {
+            if (string.IsNullOrWhiteSpace(customer.FirstName))
+            {
+                throw new CustomerValidationException("First name is required!");
+            }
+            
+            if (string.IsNullOrWhiteSpace(customer.LastName))
+            {
+                throw new CustomerValidationException("Last name is required!");
+            }
+            
+            if (string.IsNullOrWhiteSpace(customer.EmailAddress))
+            {
+                throw new CustomerValidationException("Email address is required!");
+            }
+
+            if (!customer.EmailAddress.Contains("@"))
+            {
+                throw new CustomerValidationException("Email address must be valid.");
+            }
+
+            if (string.IsNullOrWhiteSpace(customer.PhoneNumber))
+            {
+                throw new CustomerValidationException("Phone number is required!");
+            }
         }
     }
 }
