@@ -111,5 +111,14 @@ namespace Booking_System.Api.Controllers
             }
 
         }
+        [HttpGet("debug-courts-count")]
+        public async Task<ActionResult<int>> GetCourtsCount()
+        {
+            var courts = await _bookingService.GetAvailabilityAsync(
+                DateOnly.FromDateTime(DateTime.Today),
+                DateOnly.FromDateTime(DateTime.Today));
+
+            return Ok(courts.Count());
+        }
     }
 }
