@@ -6,7 +6,7 @@ namespace Booking_System.Api.Dtos
     public class AvailableSlotDto
     {
         public int CourtId { get; set; }
-        public string CourName { get; set; } = string.Empty;
+        public string CourtName { get; set; } = string.Empty;
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
     }
