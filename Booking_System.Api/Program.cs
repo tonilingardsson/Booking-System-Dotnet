@@ -1,7 +1,6 @@
 using Booking_System.Api.Data;
 using Booking_System.Api.Services;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
 
 namespace Booking_System.Api
 {
@@ -14,9 +13,10 @@ namespace Booking_System.Api
             builder.Services.AddControllers();
             //builder.Services.AddControllers()
             //.AddJsonOptions(options =>
-            //{ 
+            //{
             //    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             //});
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -24,7 +24,9 @@ namespace Booking_System.Api
                 options.UseSqlServer(
                     builder.Configuration.GetConnectionString("DefaultConnection")));
 
+            // Register services for dependency injection
             builder.Services.AddScoped<ICustomerService, CustomerService>();
+            builder.Services.AddScoped<IBookingService, BookingService>();
 
             var app = builder.Build();
 
