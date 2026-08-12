@@ -42,6 +42,9 @@ namespace Booking_System.Api.Controllers
         {
             var createdCustomer = await _customerService.CreateCustomerAsync(customer);
 
+            if (createdCustomer is null) {
+                return BadRequest(new { message = "Customer could not be created." });
+            }
             return CreatedAtAction(
                 nameof(GetCustomerById),
                 new { id = createdCustomer.Id }, createdCustomer);
