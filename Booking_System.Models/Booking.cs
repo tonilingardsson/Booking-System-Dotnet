@@ -11,5 +11,5 @@ public class Booking
     [NotMapped] // EF do not look for this property in the database, it is calculated on the fly
     public DateTime EndTime => StartTime.AddHours(1);
     public Customer? Customer { get; set; }
-    public Court? Court { get; set; }
+    public Court? Court { get; set; } = null;
 }
