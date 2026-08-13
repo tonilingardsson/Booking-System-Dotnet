@@ -1,3 +1,4 @@
+using Booking_System.Api.Dtos;
 using Booking_System.Api.Services;
 using Booking_System.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -46,20 +47,20 @@ namespace Booking_System.Api.Controllers
         // ASP.NET Core additionally sees: “this parameter has the [FromBody] attribute,
         // so I’ll bind it from the HTTP request body.”
 
-        public async Task<ActionResult<Booking>> Create([FromBody] Booking booking) 
+        public async Task<ActionResult<Booking>> Create([FromBody] Booking booking)
         {
             try
             {
                 var createdBooking = await _bookingService.CreateBookingAsync(booking);
 
-            return CreatedAtAction(
-                nameof(GetBookingById),
-                new { id = createdBooking.Id },
-                createdBooking);
+                return CreatedAtAction(
+                    nameof(GetBookingById),
+                    new { id = createdBooking.Id },
+                    createdBooking);
             }
             catch (BookingValidationException ex)
             {
-                return BadRequest(new { message = ex.Message});
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -86,6 +87,38 @@ namespace Booking_System.Api.Controllers
             var deleted = await _bookingService.DeleteBookingAsync(id);
             if (!deleted) return NotFound();
             return NoContent();
+        }
+
+        [HttpGet("availability")]
+        public async Task<ActionResult<IEnumerable<AvailableSlotDto>>> GetAvailability(
+            [FromQuery] DateOnly startDate,
+            [FromQuery] DateOnly endDate)
+        {
+            if (endDate < startDate)
+            {
+                return BadRequest(new { message = "End date must be greater than or equal to start date." });
+            }
+
+            try
+            {
+                var availableSlots = await _bookingService.GetAvailabilityAsync(startDate, endDate);
+                return Ok(availableSlots);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (not shown here)
+                return StatusCode(500, new { message = "An error occurred while processing your request.", details = ex.Message });
+            }
+
+        }
+        [HttpGet("debug-courts-count")]
+        public async Task<ActionResult<int>> GetCourtsCount()
+        {
+            var courts = await _bookingService.GetAvailabilityAsync(
+                DateOnly.FromDateTime(DateTime.Today),
+                DateOnly.FromDateTime(DateTime.Today));
+
+            return Ok(courts.Count());
         }
     }
 }

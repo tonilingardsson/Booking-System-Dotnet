@@ -14,14 +14,11 @@ namespace Booking_System.Api.Services
     }
 
     // Concrete implementation of IBookingService
-    // All booking-related business logic and validation lives here,
-    // not in the controllers
+    // This class contains the actual business logic for managing bookings
     public class BookingService : IBookingService
     {
         private readonly BookingDbContext _context;
         // Constructor injection of the DbContext.
-        // ASP.NET Core will create BookingService instances and
-        // pass a BookingDbContext automatically (after we register it in Program.cs)
         public BookingService(BookingDbContext context)
         {
             _context = context;
@@ -40,7 +37,6 @@ namespace Booking_System.Api.Services
 
         public async Task<Booking?> GetBookingByIdAsync(int id)
         {
-            // Find the booking with given ID, or null if not found
             return await _context.Bookings
                 .Include(b => b.Customer)
                 .Include(b => b.Court)
@@ -49,8 +45,9 @@ namespace Booking_System.Api.Services
 
         public async Task<Booking> CreateBookingAsync(Booking booking)
         {
-            // Normalize and validate booking data before saving
+            // Clean the input first
             NormalizeBooking(booking);
+            // Validate the booking against business rules
             await ValidateBookingAsync(booking, isUpdate: false);
 
             _context.Bookings.Add(booking);
@@ -79,6 +76,7 @@ namespace Booking_System.Api.Services
             await ValidateBookingAsync(existingBooking, isUpdate: true);
 
             await _context.SaveChangesAsync();
+
             return existingBooking;
         }
 
@@ -112,25 +110,60 @@ namespace Booking_System.Api.Services
                 .Include(b => b.Court)
                 .Where(b => b.StartTime >= startOfDay && b.StartTime <= endOfDay)
                 .OrderBy(b => b.StartTime)
-                .ToListAsync(); // I remember that the teacher does not like when we use too much .Include()
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<AvailableSlotDto>> GetAvailabilityAsync(DateOnly startDate, DateOnly endDate)
         {
-            // This method will:
-            // 1. Generate all possible 1-hour slots for each court between the two dates.
-            // 2. Load all bookings that fall in that range.
-            // 3. Filter out the slots that are already booked.
 
-            var slots = new List<AvailableSlotDto>();
+            // safety check: the end date cannot be before the start date
+            if (endDate < startDate)
+            {
+                throw new ArgumentException("End date cannot be before start date.");
+            }
 
-            // TODO: Implement availability calculation
-            // Hint: 
-            // - loop dates from startDate to endDate (inclusive)
-            // - for each date, for each court, loop hours 7 to 21 and 
-            //   create candidate slots; exclude hours with existing bookings.
+            var availableSlots = new List<AvailableSlotDto>();
 
-            return slots;
+            var courts = await _context.Courts.ToListAsync();
+
+            // Convert the chosen date interval into DateTime boundaries
+            var rangeStart = startDate.ToDateTime(TimeOnly.MinValue);
+            var rangeEnd = endDate.ToDateTime(TimeOnly.MaxValue);
+
+            // Load all bookings that already exist in the chosen date interval
+            var existingBookings = await _context.Bookings.Where(b => b.StartTime >= rangeStart && b.StartTime <= rangeEnd)
+                .ToListAsync();
+
+            // Create the slots for each court for each day in the range
+            for (var date = startDate; date <= endDate; date = date.AddDays(1))
+            {
+                // For each court, 
+                foreach (var court in courts)
+                {
+                    // create slots from 7:00 to 21:00
+                    for (int hour = 7; hour <= 21; hour++)
+                    {
+                        // Create a DateTime for the start of the slot and the end of the slot (start + 1 hour)
+                        var slotStart = date.ToDateTime(new TimeOnly(hour, 0));
+                        var slotEnd = slotStart.AddHours(1);
+                        // Check if this slot is already booked
+                        bool isBooked = existingBookings.Any(b => b.CourtId == court.Id && b.StartTime == slotStart);
+                        // If not booked, add to available slots
+                        if (!isBooked)
+                        {
+                            availableSlots.Add(new AvailableSlotDto
+                            {
+                                CourtId = court.Id,
+                                CourtName = court.CourtName,
+                                StartTime = slotStart,
+                                EndTime = slotEnd
+                            });
+                        }
+                    }
+                }
+            }
+
+            return availableSlots;
         }
 
         public async Task<IEnumerable<CourtStatisticsDto>> GetStatisticsAsync(DateOnly startDate, DateOnly endDate)
@@ -221,5 +254,6 @@ namespace Booking_System.Api.Services
                 throw new BookingValidationException("This court is already booked at that time.");
             }
         }
+
     } 
 }
