@@ -1,7 +1,7 @@
 namespace Booking_System.Api.Dtos
 {
     // Represents booking count for one court in a date range.
-    // Used for the admin story: bookings per count + total.
+    // Used for the admin story: bookings per count, total per court, and total.
     public class CourtStatisticsDto
     {
         public int CourtId { get; set; }

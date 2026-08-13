@@ -44,7 +44,7 @@ namespace Booking_System.Api.Controllers
 
             if (createdCustomer is null) {
                 return BadRequest(new { message = "Customer could not be created." });
-            }
+            } 
             return CreatedAtAction(
                 nameof(GetCustomerById),
                 new { id = createdCustomer.Id }, createdCustomer);
