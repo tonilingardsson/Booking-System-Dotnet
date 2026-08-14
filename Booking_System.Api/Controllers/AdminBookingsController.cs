@@ -32,7 +32,7 @@ namespace Booking_System.Api.Controllers
         }
 
         [HttpGet("interval")]
-        public async Task<IActionResult> GetBookingsReport(
+        public async Task<IActionResult> GetBookingsInterval(
             [FromQuery] DateTime startDate,
             [FromQuery] DateTime endDate)
         {
