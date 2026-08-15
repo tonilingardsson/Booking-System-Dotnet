@@ -1,6 +1,8 @@
 ﻿using Booking_System.Api.Services;
+using Booking_System.Dtos;
 using Booking_System.Models;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace Booking_System.Api.Controllers
 {
@@ -36,13 +38,20 @@ namespace Booking_System.Api.Controllers
             return Ok(customer);
         }
 
-        // Post a new customer
         [HttpPost]
-        public async Task<ActionResult<Customer>> CreateCustomer(Customer customer)
+        public async Task<ActionResult<Customer>> CreateCustomer(CustomerDto dto)
         {
+            var customer = new Customer
+            {
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                EmailAddress = dto.EmailAddress,
+                PhoneNumber = dto.PhoneNumber
+            };
+
+
             try
             {
-
             var createdCustomer = await _customerService.CreateCustomerAsync(customer);
 
             if (createdCustomer is null) {
@@ -50,7 +59,7 @@ namespace Booking_System.Api.Controllers
             } 
             return CreatedAtAction(
                 nameof(GetCustomerById),
-                new { id = createdCustomer?.Id }, createdCustomer);
+                new { id = createdCustomer.Id }, createdCustomer);
             }
             catch (CustomerValidationException ex)
             {
@@ -59,17 +68,23 @@ namespace Booking_System.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<Customer>> UpdateCustomer(int id, Customer customer)
+        public async Task<ActionResult> UpdateCustomer(int id, CustomerDto dto)
         {
-            try
-            {
-
-            var updatedCustomer = await _customerService.UpdateCustomerAsync(id, customer);
-
-            if (updatedCustomer is null)
+            var existingCustomer = await _customerService.GetCustomerByIdAsync(id);
+            
+            if (existingCustomer == null)
             {
                 return NotFound();
             }
+
+            existingCustomer.FirstName = dto.FirstName;
+            existingCustomer.LastName = dto.LastName;
+            existingCustomer.EmailAddress = dto.EmailAddress;
+            existingCustomer.PhoneNumber = dto.PhoneNumber;
+
+            try
+            {
+            var updatedCustomer = await _customerService.UpdateCustomerAsync(id,existingCustomer);
 
             return Ok(updatedCustomer);
             }
