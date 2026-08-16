@@ -41,14 +41,15 @@ namespace Booking_System.Api.Controllers
 
         // POST: api/bookings
         [HttpPost]
-        // [FromBody] is an attribute applied to the parameter:
-        // [FromBody] tells ASP.NET Core to read the JSON request body and
-        // bind it to the method parameter, which is common for POST requests.
-        // ASP.NET Core additionally sees: “this parameter has the [FromBody] attribute,
-        // so I’ll bind it from the HTTP request body.”
-
-        public async Task<ActionResult<Booking>> Create([FromBody] Booking booking)
+        public async Task<ActionResult<Booking>> Create([FromBody] BookingDto dto)
         {
+            var booking = new Booking
+            {
+                CustomerId = dto.CustomerId,
+                CourtId = dto.CourtId,
+                StartTime = dto.StartTime!.Value
+            };
+
             try
             {
                 var createdBooking = await _bookingService.CreateBookingAsync(booking);
@@ -65,14 +66,25 @@ namespace Booking_System.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<Booking>> Update(int id, [FromBody] Booking booking)
+        public async Task<ActionResult<Booking>> Update(int id, [FromBody] BookingDto dto)
         {
-            if (id != booking.Id) return BadRequest(new { message = "Id mismatch." });
+            var booking = new Booking
+            {
+                Id = id,
+                CustomerId = dto.CustomerId,
+                CourtId = dto.CourtId,
+                StartTime = dto.StartTime!.Value
+            };
 
             try
             {
                 var updated = await _bookingService.UpdateBookingAsync(booking);
-                if (updated == null) return NotFound();
+
+                if (updated is null)
+                {
+                    return NotFound();
+                }
+
                 return Ok(updated);
             }
             catch (BookingValidationException ex)
@@ -111,7 +123,7 @@ namespace Booking_System.Api.Controllers
             }
 
         }
-        [HttpGet("debug-courts-count")]
+        [HttpGet("courts-booked-today-count")]
         public async Task<ActionResult<int>> GetCourtsCount()
         {
             var courts = await _bookingService.GetAvailabilityAsync(

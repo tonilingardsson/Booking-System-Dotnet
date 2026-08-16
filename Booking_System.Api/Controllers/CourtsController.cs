@@ -1,4 +1,5 @@
 ﻿using Booking_System.Api.Data;
+using Booking_System.Dtos;
 using Booking_System.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -44,12 +45,12 @@ namespace Booking_System.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Court>> Create(Court court)
+        public async Task<ActionResult<Court>> Create(CourtDto dto)
         {
-            if (string.IsNullOrWhiteSpace(court.CourtName))
+            var court = new Court
             {
-                return BadRequest("Court name is required.");
-            }
+                CourtName = dto.CourtName
+            };
 
             _context.Courts.Add(court);
             await _context.SaveChangesAsync();
@@ -58,26 +59,16 @@ namespace Booking_System.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Court updatedCourt)
+        public async Task<IActionResult> Update(int id, CourtDto dto)
         {
-            if (id != updatedCourt.Id)
-            {
-                return BadRequest("Court id mismatch.");
-            }
-
             var existingCourt = await _context.Courts.FindAsync(id);
 
-            if (existingCourt == null)
+            if (existingCourt is null)
             {
                 return NotFound();
             }
 
-            if (string.IsNullOrWhiteSpace(updatedCourt.CourtName))
-            {
-                return BadRequest("Court name is required.");
-            }
-
-            existingCourt.CourtName = updatedCourt.CourtName;
+            existingCourt.CourtName = dto.CourtName;
 
             await _context.SaveChangesAsync();
 
